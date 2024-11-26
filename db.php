@@ -34,6 +34,37 @@ class DB{
         return $this->fetchAll($sql);
     }
 
+    function find($id){
+        $sql="SELECT * FROM $this->table ";
+       
+            if(is_array($id)){
+
+                $where=$this->a2s($id);
+                $sql=$sql . " WHERE ". join(" && ",$where);
+                
+            }else{
+                $sql .= " WHERE `id`=$id ";
+            }
+          
+            return $this->fetchOne($sql);
+        }      
+
+
+        function del($id){
+            $sql="DELETE  FROM $this->table ";
+           
+                if(is_array($id)){
+    
+                    $where=$this->a2s($id);
+                    $sql=$sql . " WHERE ". join(" && ",$where);
+                    
+                }else{
+                    $sql .= " WHERE `id`=$id ";
+                }
+              
+                return $this->pdo->exec($sql);
+            }      
+
 
     // 把陣列轉成條件字串陣列
     function a2s($array){
@@ -45,16 +76,15 @@ class DB{
     }
 function fetchOne($sql){
     //echo $sql
-    return $this->pdo->query($sql)->fetch();
+    return $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
 }
 function fetchAll($sql){
     // echo $sql;
-    return $this->pdo->query($sql)->fetchAll();
+    return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
 }
 
 }
-
 
 
 /* function q($sql){
@@ -68,6 +98,7 @@ function fetchAll($sql){
 
 
 $DEPT=new DB('dept');
-$dept=$DEPT->all(" Order by `id` desc");
+//$dept=$DEPT->q("SELECT * FROM dept");
+$dept=$DEPT->del(4);
 
 dd($dept);
