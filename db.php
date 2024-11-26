@@ -50,6 +50,25 @@ class DB{
         }      
 
 
+        function save($array){
+            if(isset($array['id'])){
+                // update
+                // update table set `欄位1`='值1',`欄位2`='值2' where `id`='值'
+                $set=$this->a2s($array);
+                $sql ="UPDATE $this->table SET ".join(',',$set)." where `id`='{$array['id']}'";
+                
+            }else{
+                // insert
+                $cols=array_keys($array);
+                
+                $sql="INSERT INTO $this->table (`".join("`,`",$cols)."`) VALUES('".join("','",$array)."')";
+            }
+            
+            echo $sql;
+            return $this->pdo->exec($sql);
+        }
+        
+
         function del($id){
             $sql="DELETE  FROM $this->table ";
            
@@ -98,7 +117,11 @@ function fetchAll($sql){
 
 
 $DEPT=new DB('dept');
+
 //$dept=$DEPT->q("SELECT * FROM dept");
-$dept=$DEPT->del(4);
+$dept=$DEPT->find(['code'=>'404']);
+//$DEPT->del(['code'=>'504']);
+// $DEPT->save(['code'=>'403','name'=>'資訊部']);
+$DEPT->save(['code'=>'403','id'=>'7','name'=>'資訊科']);
 
 dd($dept);
